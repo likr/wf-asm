@@ -1,4 +1,4 @@
-function WFModule(stdlib, foreign, heap) {
+module.exports = function WFModule(stdlib, foreign, heap) {
   "use asm";
 
   var buffer = new stdlib.Uint32Array(heap);
@@ -48,82 +48,4 @@ function WFModule(stdlib, foreign, heap) {
   return {
     warshallFloyd: warshallFloyd
   };
-}
-
-
-function wfAsm(graph) {
-  var n = graph.numVertices();
-  var size = 1;
-  while (size < n * n * 4) {
-    size <<= 1;
-  }
-  var heap = new ArrayBuffer(size);
-  var matrix = new Uint32Array(heap, 0, n * n);
-  graph.edges().forEach(function(edge) {
-    var u = edge[0],
-        v = edge[1];
-    matrix[u * n + v] = graph.get(u, v).weight;
-  });
-  module = WFModule(window, null, heap);
-  module.warshallFloyd(n);
-}
-
-
-function wfEgridCore(graph) {
-  var solver = egrid.core.graph.warshallFloyd();
-  solver(graph);
-}
-
-
-function run(f) {
-  var i;
-  var repeat = 5;
-  var start = new Date();
-  for (i = 0; i < repeat; ++i) {
-    f();
-  }
-  var stop = new Date();
-  return (stop - start) / repeat;
-}
-
-
-(function() {
-  var i, u, v;
-  var nv = 200;
-  var ne = nv * nv / 10;
-  var edges = [];
-
-  var graph = egrid.core.graph.adjacencyList();
-  for (i = 0; i < nv; ++i) {
-    graph.addVertex();
-  }
-  for (i = 0; i < ne; ++i) {
-    u = Math.floor(Math.random() * nv);
-    v = Math.floor(Math.random() * nv);
-    graph.addEdge(u, v, {
-      weight: Math.floor(Math.random() * 9) + 1
-    });
-  }
-
-  var time1 = run(function() {
-    wfAsm(graph);
-  });
-
-  var time2 = run(function() {
-    wfEgridCore(graph);
-  });
-
-  var body = document.getElementsByTagName('body')[0];
-
-  var div1 = document.createElement('div');
-  div1.innerHTML = 'asm.js: ' + time1 + 'ms';
-  body.appendChild(div1);
-
-  var div2 = document.createElement('div');
-  div2.innerHTML = 'egrid-core: ' + time2 + 'ms';
-  body.appendChild(div2);
-
-  var div3 = document.createElement('div');
-  div3.innerHTML = (time2 / time1) + 'X';
-  body.appendChild(div3);
-})();
+};

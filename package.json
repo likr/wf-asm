@@ -1,11 +1,15 @@
 {
-  "name": "asm-wf",
-  "version": "0.0.0",
+  "name": "wf-asm",
+  "version": "0.0.1",
   "description": "Warshall-Floyd algorithm using asm.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Yosuke ONOUE <onoue@likr-lab.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/likr/wf-asm.git"
+  },
   "license": "MIT"
 }
